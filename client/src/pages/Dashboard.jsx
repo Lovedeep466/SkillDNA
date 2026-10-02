@@ -44,6 +44,10 @@ function Dashboard() {
   const [gapLoading, setGapLoading] = useState(false);
   const [gapError, setGapError] = useState("");
 
+  const [roadmapData, setRoadmapData] = useState(null);
+  const [roadmapLoading, setRoadmapLoading] = useState(false);
+  const [roadmapError, setRoadmapError] = useState("");
+
   const handleLogout = () => {
     logout();
     navigate("/login");
@@ -192,6 +196,22 @@ function Dashboard() {
       setGapError(err.response?.data?.message || "Something went wrong");
     } finally {
       setGapLoading(false);
+    }
+  };
+
+  const handleGetRoadmap = async () => {
+    setRoadmapError("");
+    setRoadmapLoading(true);
+
+    try {
+      const res = await api.get("/roadmap", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      setRoadmapData(res.data);
+    } catch (err) {
+      setRoadmapError(err.response?.data?.message || "Something went wrong");
+    } finally {
+      setRoadmapLoading(false);
     }
   };
 
@@ -496,6 +516,54 @@ function Dashboard() {
               <p style={{ margin: "4px 0 0 0", fontSize: "13px", color: statusColor(item.status) }}>
                 {item.status}
               </p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <hr style={{ margin: "20px 0" }} />
+
+      <h2>Your Learning Roadmap 🗺️</h2>
+      <button onClick={handleGetRoadmap} disabled={roadmapLoading} style={styles.button}>
+        {roadmapLoading ? "Generating..." : "View My Roadmap"}
+      </button>
+
+      {roadmapError && <p style={{ color: "red" }}>{roadmapError}</p>}
+
+      {roadmapData && (
+        <div style={{ marginTop: "16px" }}>
+          <h3>Target Role: {roadmapData.targetRole}</h3>
+
+          {roadmapData.roadmap.length === 0 && (
+            <p>🎉 Great! No major skill gaps found for this role.</p>
+          )}
+
+          {roadmapData.roadmap.map((item, index) => (
+            <div
+              key={item.skill}
+              style={{
+                border: `1px solid ${item.priority === "High" ? "red" : "orange"}`,
+                borderRadius: "6px",
+                padding: "12px",
+                marginBottom: "10px",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <strong>
+                  {index + 1}. {item.skill}
+                </strong>
+                <span style={{ color: item.priority === "High" ? "red" : "orange" }}>
+                  {item.priority} Priority
+                </span>
+              </div>
+              <p style={{ fontSize: "13px", margin: "6px 0" }}>
+                Current: {item.yourScore} / Required: {item.requiredScore}
+              </p>
+              <ul style={{ margin: "4px 0 0 0", paddingLeft: "18px" }}>
+                {item.resources.map((res, i) => (
+                  <li key={i} style={{ fontSize: "13px" }}>{res}</li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>

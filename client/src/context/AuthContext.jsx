@@ -7,7 +7,6 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user data exists in localStorage (page refresh pe login persist rahe)
     const storedUser = localStorage.getItem("skilldna_user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));

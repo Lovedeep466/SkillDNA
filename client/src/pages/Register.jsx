@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
-import Button from "../components/ui/Button";
+import AuthLayout from "../components/layout/AuthLayout";
 import Input from "../components/ui/Input";
-import Card from "../components/ui/Card";
+import Button from "../components/ui/Button";
+import Alert from "../components/ui/Alert";
 
 function Register() {
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
@@ -14,68 +15,73 @@ function Register() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-
     try {
       const res = await api.post("/auth/register", formData);
       login(res.data);
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong");
+      setError(err.response?.data?.message || "We couldn't create your account. Try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center px-4"
-      style={{ backgroundColor: "var(--color-bg)" }}
-    >
-      <Card className="w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-1" style={{ color: "var(--color-text)" }}>
-          Create Account
-        </h1>
-        <p className="text-sm mb-6" style={{ color: "var(--color-text-muted)" }}>
-          Start tracking your real technical skills
-        </p>
-
-        {error && (
-          <div
-            className="text-sm rounded-xl px-4 py-2 mb-4"
-            style={{ backgroundColor: "var(--color-error-bg)", color: "var(--color-error-text)" }}
-          >
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <Input type="text" name="name" placeholder="Full Name" value={formData.name} onChange={handleChange} required />
-          <Input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
-          <Input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
-
-          <div className="mt-2">
-            <Button type="submit" loading={loading}>
-              {loading ? "Creating..." : "Register"}
-            </Button>
-          </div>
-        </form>
-
-        <p className="text-center text-sm mt-6" style={{ color: "var(--color-text-muted)" }}>
+    <AuthLayout
+      title="Create your account"
+      subtitle="It takes a minute to set up."
+      footer={
+        <>
           Already have an account?{" "}
-          <Link to="/login" style={{ color: "var(--color-primary)" }} className="font-medium">
-            Login
+          <Link to="/login" className="font-semibold text-primary-600 hover:text-primary-700">
+            Log in
           </Link>
-        </p>
-      </Card>
-    </div>
+        </>
+      }
+    >
+      <Alert tone="error" className="mb-4">
+        {error}
+      </Alert>
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <Input
+          label="Full name"
+          type="text"
+          name="name"
+          placeholder="Your name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+        />
+        <Input
+          label="Email"
+          type="email"
+          name="email"
+          placeholder="you@example.com"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+        <Input
+          label="Password"
+          type="password"
+          name="password"
+          placeholder="Choose a password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+        />
+        <Button type="submit" loading={loading} loadingText="Creating account..." className="mt-2 w-full">
+          Create account
+        </Button>
+      </form>
+    </AuthLayout>
   );
 }
 

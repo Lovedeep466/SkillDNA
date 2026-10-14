@@ -1,15 +1,15 @@
-function Input(props) {
+import { fieldClass } from "./styles";
+
+export default function Input({ label, id, className = "", ...props }) {
+  const inputId = id || props.name;
   return (
-    <input
-      {...props}
-      className="rounded-xl px-4 py-3 border outline-none transition focus:ring-2"
-      style={{
-        backgroundColor: "var(--color-bg)",
-        borderColor: "var(--color-border)",
-        color: "var(--color-text)",
-      }}
-    />
+    <div>
+      {label && (
+        <label htmlFor={inputId} className="mb-1.5 block text-xs font-medium text-muted">
+          {label}
+        </label>
+      )}
+      <input id={inputId} className={`${fieldClass} ${className}`} {...props} />
+    </div>
   );
 }
-
-export default Input;

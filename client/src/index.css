@@ -1,13 +1,54 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
-:root {
-  --color-primary: #4f46e5;
-  --color-primary-hover: #4338ca;
-  --color-bg: #f9fafb;
-  --color-card: #ffffff;
-  --color-border: #e5e7eb;
-  --color-text: #111827;
-  --color-text-muted: #6b7280;
-  --color-error-bg: #fef2f2;
-  --color-error-text: #dc2626;
+/*
+  ==================================================================
+  SkillDNA theme: the one place to change how the whole app looks.
+  Change a value below and every page updates.
+
+  - Different brand colour?  Edit the --color-primary-* lines.
+  - Different font?          Edit --font-sans (and the @import above).
+  - Different page/card look? Edit page, surface, line.
+  Shapes and spacing of buttons, cards and inputs live in
+  src/components/ui/
+  ==================================================================
+*/
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Brand */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+
+  /* Surfaces and text */
+  --color-page: #f3f4f6;
+  --color-surface: #ffffff;
+  --color-line: #e5e7eb;
+  --color-ink: #111827;
+  --color-muted: #6b7280;
+  --color-subtle: #9ca3af;
+
+  /* Status colours (good / needs work / problem) */
+  --color-success-50: #ecfdf5;
+  --color-success-100: #d1fae5;
+  --color-success-600: #059669;
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-600: #d97706;
+  --color-danger-50: #fef2f2;
+  --color-danger-100: #fee2e2;
+  --color-danger-600: #dc2626;
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  body {
+    @apply bg-page font-sans text-ink antialiased;
+  }
 }
